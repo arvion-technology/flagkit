@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <title>FlagKit — feature flags with real targeting rules</title>
+  <meta name="description" content="A feature-flag playground: stable hash bucketing, ordered targeting rules, segments, percentage rollouts and schedules, with a trace that shows why a value was chosen." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230b0f1a'/><text x='16' y='22' font-family='sans-serif' font-size='16' font-weight='700' fill='%23f5c26b' text-anchor='middle'>A</text></svg>" />
+  <link rel="stylesheet" href="arvion.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="aurora"></div>
+  <div class="grid-lines"></div>
+
+  <div class="app">
+    <header class="topbar">
+      <a class="brand" href="./index.html">
+        <span class="brand-mark">A</span>
+        <span>
+          <span class="brand-word">ARVION <b>/</b> FLAGKIT</span>
+          <span class="brand-sub" style="display:block">Feature flags, evaluated locally</span>
+        </span>
+      </a>
+      <span class="spacer"></span>
+      <span class="badge mono">murmur3</span>
+      <span class="badge green"><span class="dot pulse"></span> no network</span>
+      <a class="btn sm" href="https://github.com/arvion-technology/flagkit" target="_blank" rel="noopener">GitHub ↗</a>
+    </header>
+
+    <main class="main">
+      <div class="page-head">
+        <div>
+          <div class="eyebrow">Developer tools / Feature flags</div>
+          <h1>FlagKit</h1>
+          <p class="lede">Set the user's attributes and watch the evaluation. Rules are ordered, the first match wins, and the trace shows every condition that ran — including the bucket that placed this user.</p>
+        </div>
+        <span class="spacer"></span>
+        <div class="row">
+          <span class="badge" id="eval-counter">0 evaluations</span>
+          <span class="badge gold" id="workspace-version">workspace v3</span>
+        </div>
+      </div>
+
+      <div class="grid flag-grid">
+        <div class="col side-col">
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Flags</div>
+                <div class="card-sub">Toggle to simulate a kill switch</div>
+              </div>
+              <span class="spacer"></span>
+              <span class="badge nowrap" id="flag-count">—</span>
+            </div>
+            <div class="flag-list" id="flag-list"></div>
+          </div>
+
+          <div class="card snippet-card">
+            <div class="card-head">
+              <div class="card-title">In your app</div>
+              <span class="spacer"></span>
+              <span class="badge">sdk.js</span>
+            </div>
+            <pre class="code">const flags = createClient(workspace);
+
+flags.getValue("new-checkout");
+// true</pre>
+            <p class="small muted mb-0">One synchronous call — no request, no cache to warm.</p>
+          </div>
+        </div>
+
+        <div class="col side-col">
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Evaluation context</div>
+                <div class="card-sub">Attributes a real client would send</div>
+              </div>
+            </div>
+            <div class="col" style="gap:10px">
+              <label class="field">User id
+                <input class="input mono" id="attr-userId" spellcheck="false" />
+              </label>
+              <label class="field">Email
+                <input class="input" id="attr-email" spellcheck="false" />
+              </label>
+              <div class="attr-grid">
+                <label class="field">Plan
+                  <select class="select" id="attr-plan">
+                    <option value="free">free</option>
+                    <option value="pro">pro</option>
+                    <option value="enterprise">enterprise</option>
+                  </select>
+                </label>
+                <label class="field">Country
+                  <select class="select" id="attr-country">
+                    <option value="NP">NP</option>
+                    <option value="IN">IN</option>
+                    <option value="US">US</option>
+                    <option value="DE">DE</option>
+                  </select>
+                </label>
+                <label class="field">Device
+                  <select class="select" id="attr-device">
+                    <option value="desktop">desktop</option>
+                    <option value="mobile">mobile</option>
+                    <option value="tablet">tablet</option>
+                  </select>
+                </label>
+                <label class="field">LTV
+                  <input class="input" id="attr-ltv" type="number" min="0" step="10" />
+                </label>
+              </div>
+              <div class="row">
+                <button class="btn sm" id="randomize">Randomize user id</button>
+                <span class="spacer"></span>
+                <span class="small muted">subject <span class="mono" id="subject">—</span></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card buckets-card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Rollout buckets</div>
+                <div class="card-sub">100 hash buckets; the gold range is inside the rollout</div>
+              </div>
+              <span class="spacer"></span>
+              <span class="badge gold nowrap" id="buckets-rollout">—</span>
+            </div>
+            <div class="bucket-strip" id="bucket-strip"></div>
+            <div class="small muted mt-1" id="bucket-caption">—</div>
+          </div>
+        </div>
+
+        <div class="col side-col">
+          <div class="card eval-card">
+            <div class="card-head">
+              <div>
+                <div class="card-title" id="eval-name">—</div>
+                <div class="card-sub mono" id="eval-key">—</div>
+              </div>
+              <span class="spacer"></span>
+              <span class="badge" id="eval-reason">—</span>
+            </div>
+            <div class="eval-value-row">
+              <div class="eval-value" id="eval-value">—</div>
+              <div class="eval-why">
+                <div class="small muted" id="eval-why">—</div>
+                <div class="row mt-1" style="gap:8px">
+                  <span class="badge" id="eval-rule">no rule</span>
+                  <span class="badge" id="eval-schedule" hidden>schedule</span>
+                </div>
+              </div>
+            </div>
+            <div class="bucket-line">
+              <span class="small muted">subject bucket</span>
+              <div class="bucket-track"><i id="bucket-fill"></i></div>
+              <span class="mono small" id="bucket-value">—</span>
+            </div>
+            <div class="rollout-line">
+              <span class="small muted">flag fallback rollout</span>
+              <input type="range" id="rollout" min="0" max="100" step="5" />
+              <span class="mono small" id="rollout-value">—</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Why this value</div>
+                <div class="card-sub">Evaluation order, top to bottom</div>
+              </div>
+              <span class="spacer"></span>
+              <span class="badge nowrap">first match wins</span>
+            </div>
+            <div class="trace" id="trace"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="demo-banner">
+    <span class="brand-mark" style="width:20px;height:20px;font-size:10px;border-radius:6px">A</span>
+    <span>Arvion Labs</span>
+    <span class="sep"></span>
+    <a href="https://arvion-technology.github.io/labs/">All projects</a>
+    <span class="sep"></span>
+    <a href="https://github.com/arvion-technology/flagkit" target="_blank" rel="noopener">source</a>
+  </div>
+
+  <script src="arvion.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

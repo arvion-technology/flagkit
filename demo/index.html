@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="color-scheme" content="dark" />
-  <title>FlagKit — feature flags with real targeting rules</title>
+  <title>FlagKit | feature flags with real targeting rules</title>
   <meta name="description" content="A feature-flag playground: stable hash bucketing, ordered targeting rules, segments, percentage rollouts and schedules, with a trace that shows why a value was chosen." />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M50 9 L91 91 H73 L50 52 L27 91 H9 Z' fill='%23f5c26b'/><circle cx='50' cy='31' r='6.6' fill='%230b0f1a'/><path d='M50 52 L67 90 H33 Z' fill='%230b0f1a'/></svg>" />
   <link rel="stylesheet" href="arvion.css" />
@@ -34,7 +34,7 @@
         <div>
           <div class="eyebrow">Developer tools / Feature flags</div>
           <h1>FlagKit</h1>
-          <p class="lede">Set the user's attributes and watch the evaluation. Rules are ordered, the first match wins, and the trace shows every condition that ran — including the bucket that placed this user.</p>
+          <p class="lede">Set the user's attributes and watch the evaluation. Rules are ordered, the first match wins, and the trace shows every condition that ran, including the bucket that placed this user.</p>
         </div>
         <span class="spacer"></span>
         <div class="row">
@@ -52,7 +52,7 @@
                 <div class="card-sub">Toggle to simulate a kill switch</div>
               </div>
               <span class="spacer"></span>
-              <span class="badge nowrap" id="flag-count">—</span>
+              <span class="badge nowrap" id="flag-count">, </span>
             </div>
             <div class="flag-list" id="flag-list"></div>
           </div>
@@ -67,7 +67,7 @@
 
 flags.getValue("new-checkout");
 // true</pre>
-            <p class="small muted mb-0">One synchronous call — no request, no cache to warm.</p>
+            <p class="small muted mb-0">One synchronous call, no request, no cache to warm.</p>
           </div>
         </div>
 
@@ -116,7 +116,7 @@ flags.getValue("new-checkout");
               <div class="row">
                 <button class="btn sm" id="randomize">Randomize user id</button>
                 <span class="spacer"></span>
-                <span class="small muted">subject <span class="mono" id="subject">—</span></span>
+                <span class="small muted">subject <span class="mono" id="subject">, </span></span>
               </div>
             </div>
           </div>
@@ -128,10 +128,10 @@ flags.getValue("new-checkout");
                 <div class="card-sub">100 hash buckets; the gold range is inside the rollout</div>
               </div>
               <span class="spacer"></span>
-              <span class="badge gold nowrap" id="buckets-rollout">—</span>
+              <span class="badge gold nowrap" id="buckets-rollout">, </span>
             </div>
             <div class="bucket-strip" id="bucket-strip"></div>
-            <div class="small muted mt-1" id="bucket-caption">—</div>
+            <div class="small muted mt-1" id="bucket-caption">, </div>
           </div>
         </div>
 
@@ -139,16 +139,16 @@ flags.getValue("new-checkout");
           <div class="card eval-card">
             <div class="card-head">
               <div>
-                <div class="card-title" id="eval-name">—</div>
-                <div class="card-sub mono" id="eval-key">—</div>
+                <div class="card-title" id="eval-name">, </div>
+                <div class="card-sub mono" id="eval-key">, </div>
               </div>
               <span class="spacer"></span>
-              <span class="badge" id="eval-reason">—</span>
+              <span class="badge" id="eval-reason">, </span>
             </div>
             <div class="eval-value-row">
-              <div class="eval-value" id="eval-value">—</div>
+              <div class="eval-value" id="eval-value">, </div>
               <div class="eval-why">
-                <div class="small muted" id="eval-why">—</div>
+                <div class="small muted" id="eval-why">, </div>
                 <div class="row mt-1" style="gap:8px">
                   <span class="badge" id="eval-rule">no rule</span>
                   <span class="badge" id="eval-schedule" hidden>schedule</span>
@@ -158,12 +158,12 @@ flags.getValue("new-checkout");
             <div class="bucket-line">
               <span class="small muted">subject bucket</span>
               <div class="bucket-track"><i id="bucket-fill"></i></div>
-              <span class="mono small" id="bucket-value">—</span>
+              <span class="mono small" id="bucket-value">, </span>
             </div>
             <div class="rollout-line">
               <span class="small muted">flag fallback rollout</span>
               <input type="range" id="rollout" min="0" max="100" step="5" />
-              <span class="mono small" id="rollout-value">—</span>
+              <span class="mono small" id="rollout-value">, </span>
             </div>
           </div>
 

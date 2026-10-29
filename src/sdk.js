@@ -32,7 +32,7 @@ export function createClient(workspace, { now = () => Date.now(), context = {} }
       const result = client.evaluate(key, attributes);
       return result.reason === "not_found" ? fallback : result.value;
     },
-    /** Every flag's value for one context — the shape a server render needs. */
+    /** Every flag's value for one context, the shape a server render needs. */
     all(attributes = {}) {
       return Object.fromEntries(flags.map((flag) => [flag.key, client.getValue(flag.key, false, attributes)]));
     },

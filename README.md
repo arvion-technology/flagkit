@@ -2,7 +2,7 @@
 <img src="docs/demo.gif" alt="FlagKit demo: flag list, evaluation context and the rule trace that explains the value" width="100%" />
 </div>
 
-<sub>Recorded from the live demo — <a href="docs/demo.mp4">MP4</a> · <a href="docs/screenshot.png">static frame</a></sub>
+<sub>Recorded from the live demo, <a href="docs/demo.mp4">MP4</a> · <a href="docs/screenshot.png">static frame</a></sub>
 
 # FlagKit
 
@@ -22,22 +22,22 @@ function so the client SDK, the tests and the demo can never disagree.
 
 ## What it does
 
-- **Stable bucketing** — MurmurHash3 (x86 32-bit) over `flag:subject`, mapped to
+- **Stable bucketing**: MurmurHash3 (x86 32-bit) over `flag:subject`, mapped to
   100 buckets, so a user never flickers between variations.
-- **Ordered targeting rules** — the first matching rule wins. Conditions
+- **Ordered targeting rules**: the first matching rule wins. Conditions
   support `eq`, `neq`, `in`, `not_in`, `contains`, `starts_with`, `ends_with`,
   `gt`, `gte`, `lt`, `lte` and `exists`.
-- **AND / OR / NOT groups** — nest `{ all: [...] }`, `{ any: [...] }` and
+- **AND / OR / NOT groups**: nest `{ all: [...] }`, `{ any: [...] }` and
   `{ not: ... }` to express real audiences.
-- **Segments** — reusable condition groups referenced from a rule with
+- **Segments**: reusable condition groups referenced from a rule with
   `{ segment: "beta-testers" }`.
-- **Percentage rollouts** — per rule or as the flag-level fallback, always
+- **Percentage rollouts**: per rule or as the flag-level fallback, always
   hashed from the targeting key rather than list position.
-- **Schedules** — serve the off value before `start` and after `end`.
-- **Kill switch** — `enabled: false` short-circuits everything else.
-- **An SDK** — `createClient(workspace).getValue(...)`, `all()`, `subscribe()`,
+- **Schedules**: serve the off value before `start` and after `end`.
+- **Kill switch**: `enabled: false` short-circuits everything else.
+- **An SDK**: `createClient(workspace).getValue(...)`, `all()`, `subscribe()`,
   `updateFlag()` and `setContext()`.
-- **Validation** — a workspace with an unknown operator or a duplicate rule id
+- **Validation**: a workspace with an unknown operator or a duplicate rule id
   is rejected with every problem listed, instead of evaluating to false.
 
 ## Screenshots
@@ -125,7 +125,7 @@ const result = flags.evaluate("new-checkout", { country: "NP", plan: "pro" });
 is reduced to a bucket in `[0, 100)`, and a rollout of 15% serves the on value
 for buckets below 15. Different flags use different namespaces, so the same
 user is not first in line for every rollout. A test hashes 50,000 subjects into
-ten buckets and fails if any bucket drifts outside 8–12%, which catches a broken
+ten buckets and fails if any bucket drifts outside 8-12%, which catches a broken
 hash before it reaches a customer.
 
 **Rules are a sorted list and evaluation stops at the first match.** That makes
@@ -155,14 +155,14 @@ npm test
 
 34 `node:test` cases in four files:
 
-- `hash.test.js` — reference MurmurHash3 vectors, determinism, bucket range,
+- `hash.test.js`: reference MurmurHash3 vectors, determinism, bucket range,
   namespace separation, distribution across buckets and rollouts.
-- `evaluate.test.js` — first-match precedence, segments, every operator,
+- `evaluate.test.js`: first-match precedence, segments, every operator,
   nested `all`/`any`/`not`, schedule before/on/after, kill switch, rollout
   misses, trace contents and `explain()` for each reason.
-- `sdk.test.js` — `getValue` fallbacks, context overrides, `all()`, subscribe/
+- `sdk.test.js`: `getValue` fallbacks, context overrides, `all()`, subscribe/
   unsubscribe, `updateFlag`, `setContext`, copy-on-read and subscriber errors.
-- `validate.test.js` — duplicate keys and rule ids, unknown operators,
+- `validate.test.js`: duplicate keys and rule ids, unknown operators,
   percentage bounds, unknown segments, malformed groups and schedule ordering.
 
 `node scripts/serve-check.mjs` verifies the demo's asset references and that no
@@ -173,7 +173,7 @@ placeholder text ships.
 The workspace is a local snapshot; there is no server, no admin API and no
 audit log. Evaluation is pure JavaScript, so in a polyglot stack the Go or
 Python client would need to port `murmur3` and the string format
-`flag:<key>:<subject>` exactly — the README documents the format rather than
+`flag:<key>:<subject>` exactly, the README documents the format rather than
 pretending a shared library exists. Segments are defined per flag instead of
 workspace-wide, which keeps a flag self-contained but duplicates a segment if
 many flags use it. Conditions compare strings and numbers; there is no regex

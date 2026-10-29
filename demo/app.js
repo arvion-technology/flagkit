@@ -157,11 +157,11 @@ function renderBucketStrip(flag, currentBucket) {
     const current = currentBucket >= start && currentBucket < start + 100 / blocks;
     return el("i", {
       class: (inside ? "on" : "") + (current ? " current" : ""),
-      title: `buckets ${start}–${start + 100 / blocks - 1}`,
+      title: `buckets ${start}, ${start + 100 / blocks - 1}`,
     });
   });
   $("#bucket-strip").replaceChildren(...cells);
-  $("#bucket-caption").textContent = `${currentBucket < rollout ? "Inside" : "Outside"} the ${rollout}% rollout — this subject hashes to bucket ${currentBucket}.`;
+  $("#bucket-caption").textContent = `${currentBucket < rollout ? "Inside" : "Outside"} the ${rollout}% rollout, this subject hashes to bucket ${currentBucket}.`;
 }
 
 function renderTrace(flag, result) {
